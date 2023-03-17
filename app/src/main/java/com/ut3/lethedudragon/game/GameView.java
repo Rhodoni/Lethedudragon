@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private double difficulty = 1;
     private int score = 0;
-    private int stopwatch = 30;
+    private int stopwatch = 15;
 
     double pointX;
 
@@ -116,9 +116,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void testEndGame(){
-        if(stopwatch==0){
-            endGame();
-        }
+
     }
 
     public void update(){
@@ -130,13 +128,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         if (currentTime-lastTime>1000){
             score += 1;
+            stopwatch -= 1;
             lastTime = currentTime;
         }
         leaves.forEach(leaf -> leaf.update(2));
         updateTime();
-        testEndGame();
+
+        if (stopwatch<=0){
+            System.out.println(" End Game");
+            endGame();
+        }
         teacup.moveBottom(pointX);
-        
+
         // Update
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
@@ -154,9 +157,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
-        for(int i = 4;i<=0;i--){
+        for (int i=4; i>=0; i--){
             tmpScore =  sharedp.getInt("score"+i,0);
-            if(score > tmpScore){
+            System.out.println("Score de "+i+" : "+tmpScore);
+            if (score >= tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
             }
