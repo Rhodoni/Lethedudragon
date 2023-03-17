@@ -16,6 +16,8 @@ import com.ut3.lethedudragon.entities.Teacup;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ut3.lethedudragon.viewholder.Opening;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     private GameThread thread;
@@ -25,7 +27,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SharedPreferences sharedPreferences;
 
     private double difficulty = 0;
-    private double score = 0;
+    private int score = 0;
 
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
@@ -87,7 +89,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void endGame(){
+        //thread.setRunning(false);
+        int tmpScore;
+        int tmpPlace = 0;
+        boolean isHighScore = false;
 
+        SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedp.edit();
+        for(int i = 4;i<=0;i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if(score>tmpScore){
+                isHighScore = true;
+                tmpPlace = i;
+            }
+        }
+        if (isHighScore){
+            editor.putInt("score"+tmpPlace,score).apply();
+        }
+
+        // ((Opening)context).endingGame();
     }
 
     private void createLeafs() {
