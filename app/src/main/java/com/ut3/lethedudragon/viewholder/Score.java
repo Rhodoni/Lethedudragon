@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ut3.lethedudragon.R;
@@ -24,6 +26,13 @@ public class Score extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
+        SharedPreferences sharedPref = this.getSharedPreferences("gameEnd", Context.MODE_PRIVATE);
+        //sharedPref.edit().putInt("score",77).apply();
+
+        RecyclerView scores = (RecyclerView) findViewById(R.id.scores);
+        scores.setAdapter(new ScoreAdapter(this));
+        scores.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
