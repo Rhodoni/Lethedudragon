@@ -28,7 +28,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
     private long lastTime;
 
-    private double difficulty = 0;
+    private double difficulty = 1;
     private int score = 0;
     private int stopwatch = 30;
 
@@ -81,20 +81,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
 
         super.draw(canvas);
-
-
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
 
             chrono.draw(canvas);
             sablier.draw(canvas);
-            //leaves.forEach(leaf -> leaf.draw(canvas));
+            leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
 
 
         // Draw score
-
         Paint paint = new Paint();
         paint.setTextSize(50);
         paint.setColor(Color.GREEN);
@@ -118,9 +115,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-    }
-
-    public void createEntity(){
+        // Update
+        teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
 
         cleanEntities();
@@ -136,20 +132,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
-        for(int i = 4;i>=0;i--){
-            tmpScore =  sharedp.getInt(("score"+i),0);
-
-            if(score>tmpScore){
-
+        for(int i = 4;i<=0;i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if(score > tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
-
             }
-            //System.out.println("place : "+tmpPlace+" = "+tmpScore);
         }
         if (isHighScore){
-            System.out.println("this score is "+tmpPlace);
-
             tmpScore = sharedp.getInt(("score"+tmpPlace),0);
             editor.putInt(("score"+tmpPlace),score).apply();
 

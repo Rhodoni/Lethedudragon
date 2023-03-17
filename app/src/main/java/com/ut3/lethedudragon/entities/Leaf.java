@@ -27,9 +27,4 @@ public class Leaf extends Entity {
         y += speedY * difficulty;
         x += speedX * difficulty;
     }
-
-    @Override
-    public void collision(Entity entity) {
-
-    }
 }
