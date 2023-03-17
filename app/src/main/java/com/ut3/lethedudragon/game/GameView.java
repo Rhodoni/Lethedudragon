@@ -12,9 +12,11 @@ import android.graphics.Paint;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
@@ -133,7 +135,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText(String.valueOf(stopwatch), width / 2, (float) (height * 0.05), paint);
     }
 
-    private void updateTime() {
+
+    private void updateTime(){
         long currentTime = System.currentTimeMillis();
 
         if (currentTime - lastTime > 1000) {
@@ -143,7 +146,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void update() {
+
+    public void update(){
+        int cold = 0;
         if (Math.random() < 0.03) {
             createLeafs();
         }
@@ -152,8 +157,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             teacup.heat();
         }
         updateTime();
+        cold += 1;
 
-        if (stopwatch<=0){
+        if(cold == 3){
+            teacup.getCold();
+        }
+        if (stopwatch<=0 || teacup.getAngle()>45 || teacup.getAngle()>-45){
             endGame();
         }
 
@@ -175,7 +184,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         cleanEntities();
     }
 
-    public void endGame() {
+    public void endGame(){
         int tmpScore = 0;
         int tmpPlace = 0;
         boolean isHighScore = false;
@@ -192,22 +201,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 tmpPlace = i;
             }
         }
-        if (isHighScore) {
-            tmpScore = sharedp.getInt(("score" + tmpPlace), 0);
-            editor.putInt(("score" + tmpPlace), score).apply();
+        if (isHighScore){
+            tmpScore = sharedp.getInt(("score"+tmpPlace),0);
+            editor.putInt(("score"+tmpPlace),score).apply();
 
-            for (int i = tmpPlace + 1; i < 4; i++) {
-                editor.putInt(("score" + i), tmpScore).apply();
-                tmpScore = sharedp.getInt(("score" + i), 0);
+            for(int i=tmpPlace+1;i<4;i++){
+                editor.putInt(("score"+i),tmpScore).apply();
+                tmpScore = sharedp.getInt(("score"+i),0);
             }
         }
 
-        ((Opening) context).endingGame();
+        ((Opening)context).endingGame();
     }
 
     private void createLeafs() {
         if (Math.random() < 0.1 || leaves.size() < 2) {
-            leaves.add(new Leaf(Math.random() * width, 0, context));
+            leaves.add(new Leaf(Math.random() * width, 0,context));
         }
     }
 
@@ -217,7 +226,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void cleanEntities() {
-        leaves.removeIf(leaf -> leaf.getY() > height || leaf.isCatched);
+        leaves.removeIf(leaf -> leaf.getY() > height);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import com.ut3.lethedudragon.R;
+import com.ut3.lethedudragon.game.GameView;
 
 public class Teacup extends Entity {
     private double angle = 0;
@@ -14,10 +15,11 @@ public class Teacup extends Entity {
     private double rotationAcceleration = 0;
     private double rotationSpeed;
     private double maxRotationSpeed = 5;
-    private int temperature = 5;
+    private int temperature;
     private int nbLeaves = 0;
     private double stickSize;
     private Point pivot;
+    public boolean haveTea = false;
 
     private Context context;
     private CollideBox teaHitBox;
@@ -67,8 +69,8 @@ public class Teacup extends Entity {
         canvas.drawBitmap(bmp, (float) x, (float) y, paint);
 
         canvas.restore();
-
     }
+
 
     public boolean checkCollision(Leaf leaf) {
         double dx = Math.sin(Math.toRadians(angle)) * pivot.y;
@@ -85,7 +87,7 @@ public class Teacup extends Entity {
     }
 
     public void heat() {
-
+        this.temperature = 5;
     }
 
     public void moveBottom(double x) {
@@ -113,5 +115,13 @@ public class Teacup extends Entity {
         double x = point.x;
         double y = point.y;
         return new Point(x, y);
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void getCold() {
+        this.temperature -=1 ;
     }
 }
