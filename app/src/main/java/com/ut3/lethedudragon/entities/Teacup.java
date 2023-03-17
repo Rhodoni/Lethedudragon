@@ -1,6 +1,7 @@
 package com.ut3.lethedudragon.entities;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 public class Teacup extends Entity {
     private double angle;
@@ -11,6 +12,8 @@ public class Teacup extends Entity {
 
         this.hitBox = new CollideBox(0, 0, width, height);
         this.teaHitBox = new CollideBox(width / 2 - 10, 0, 20, 20);
+
+        paint.setColor(Color.BLUE);
     }
 
     @Override

@@ -43,4 +43,24 @@ public abstract class Entity {
     }
 
     public abstract void collision(Entity entity);
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public CollideBox getHitBox() {
+        return hitBox;
+    }
 }

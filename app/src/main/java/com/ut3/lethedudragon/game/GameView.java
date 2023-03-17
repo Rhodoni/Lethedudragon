@@ -11,6 +11,12 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.entities.Leaf;
+import com.ut3.lethedudragon.entities.Teacup;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ut3.lethedudragon.viewholder.Opening;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -22,7 +28,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SharedPreferences sharedPreferences;
 
-    private int score;
+    private double difficulty = 0;
+    private int score = 0;
+
+    private List<Leaf> leaves = new ArrayList<Leaf>();
+    private Teacup teacup;
 
     public GameView(Context context) {
         super(context);
@@ -41,12 +51,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-
+        teacup = new Teacup(width/2, height);
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-
+        thread.setRunning(true);
+        thread.start();
     }
 
     @Override
@@ -61,7 +72,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas) {
+
         super.draw(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+            leaves.forEach(leaf -> leaf.draw(canvas));
+            teacup.draw(canvas);
+        }
 
 
         // Draw score
@@ -71,6 +88,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText(String.valueOf(score),width/2,100, paint);
     }
     public void update(){
+        if (Math.random() < 0.01) {
+            createLeafs();
+        }
         long currentTime = System.currentTimeMillis();
 
         if (currentTime-lastTime>1000){
@@ -84,8 +104,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    public void cleanEntities(){
+        leaves.forEach(leaf -> leaf.update(difficulty));
 
+        cleanEntities();
     }
 
     public void endGame(){
@@ -108,5 +129,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
        // ((Opening)context).endingGame();
+    }
+
+    private void createLeafs() {
+        if (Math.random() < 0.1 || leaves.size() < 2) {
+            leaves.add(new Leaf(Math.random() * width, 0));
+        }
+    }
+
+    private void updateDifficulty() {
+        // Difficulté est dépendante du score
+        double difficulty = (double) score / (score + 1000) * 20;
+    }
+
+    private void cleanEntities() {
+        leaves.removeIf(leaf -> leaf.getY() > height);
     }
 }
