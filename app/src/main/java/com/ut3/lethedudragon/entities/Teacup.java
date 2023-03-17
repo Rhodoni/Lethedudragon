@@ -21,7 +21,8 @@ public class Teacup extends Entity {
     private CollideBox stickBox;
 
     public Teacup(double x, double y, Context context) {
-        super(x, y,
+        super((x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()),
+                y - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getHeight(),
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth(),
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getHeight(),
                 null);
@@ -78,7 +79,7 @@ public class Teacup extends Entity {
 
     public void moveBottom(double x) {
 
-        // TODO Move Top
+        this.x = x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()/2;
     }
 
     public void moveTop(double force) {

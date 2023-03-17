@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
@@ -32,6 +35,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int score = 0;
     private int stopwatch = 30;
 
+    double pointX;
+
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
     private Chrono chrono;
@@ -45,6 +50,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         width = displayMetrics.widthPixels;
+        pointX = width*0.5;
         height = displayMetrics.heightPixels;
 
         this.captorActivity = new CaptorActivity();
@@ -58,6 +64,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         chrono = new Chrono(width/2 -100, 40, context);
         sablier = new Sablier(width/2 -100, 140, context);
 
+        teacup = new Teacup(pointX, height,context);
     }
 
     @Override
@@ -74,7 +81,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         thread.setRunning(false);
-
     }
 
     @Override
@@ -90,7 +96,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             teacup.draw(canvas);
         }
 
-
         // Draw score
         Paint paint = new Paint();
         paint.setTextSize(50);
@@ -99,21 +104,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.RED);
         canvas.drawText(String.valueOf(stopwatch),width/2,200, paint);
     }
+
     public void update(){
         if (Math.random() < 0.01) {
             createLeafs();
         }
+
         long currentTime = System.currentTimeMillis();
 
         if (currentTime-lastTime>1000){
             score += 1;
-            stopwatch -=1;
-
             lastTime = currentTime;
+        }
+        teacup.moveBottom(pointX);
+    }
+
+    public void createEntity(){
             if(stopwatch==0){
                 endGame();
             }
-        }
+
 
         // Update
         teacup.update(difficulty);
@@ -165,5 +175,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void cleanEntities() {
         leaves.removeIf(leaf -> leaf.getY() > height);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        pointX = event.getX();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        return true;
     }
 }
