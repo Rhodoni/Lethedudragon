@@ -162,7 +162,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if(cold == 3){
             teacup.getCold();
         }
-        if (stopwatch<=0 || teacup.getAngle()>45 || teacup.getAngle()>-45){
+        if (stopwatch<=0 || teacup.getAngle()>45 || teacup.getAngle()<-45){
             endGame();
         }
 
