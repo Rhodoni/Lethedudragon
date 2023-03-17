@@ -61,8 +61,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void initialiseGame() {
         teacup = new Teacup(width/2, height/2,context);
-        chrono = new Chrono(width/2 -100, 40, context);
-        sablier = new Sablier(width/2 -100, 140, context);
+        chrono = new Chrono(width/2 -120, height*0.10, context);
+        sablier = new Sablier(width/2 -120, height*0.03, context);
 
         teacup = new Teacup(pointX, height,context);
     }
@@ -100,9 +100,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Paint paint = new Paint();
         paint.setTextSize(50);
         paint.setColor(Color.GREEN);
-        canvas.drawText(String.valueOf(score),width/2,100, paint);
+        canvas.drawText(String.valueOf(score), width/2,(float) (height*0.125), paint);
         paint.setColor(Color.RED);
-        canvas.drawText(String.valueOf(stopwatch),width/2,200, paint);
+        canvas.drawText(String.valueOf(stopwatch), width/2,(float) (height*0.05), paint);
     }
 
     private void updateTime(){
@@ -134,6 +134,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         leaves.forEach(leaf -> leaf.update(2));
         updateTime();
+        testEndGame();
         teacup.moveBottom(pointX);
         
         // Update
