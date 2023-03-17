@@ -95,9 +95,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (currentTime-lastTime>1000){
             score += 1;
             lastTime = currentTime;
-            if(Math.random()<0.1 || score > 10){
-                endGame();
-            }
         }
 
         // Update
