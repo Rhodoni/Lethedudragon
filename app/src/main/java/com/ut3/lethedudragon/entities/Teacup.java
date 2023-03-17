@@ -13,7 +13,8 @@ public class Teacup extends Entity {
     private CollideBox teaHitBox;
 
     public Teacup(double x, double y, Context context) {
-        super(x, y,
+        super((x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()),
+                y - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getHeight(),
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth(),
                 BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getHeight(),
                 null);
@@ -28,6 +29,10 @@ public class Teacup extends Entity {
     @Override
     public void update(double difficulty) {
 
+    }
+
+    public void setX(double x){
+        this.x = x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth();
     }
 
     @Override

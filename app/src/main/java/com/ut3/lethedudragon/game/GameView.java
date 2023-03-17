@@ -6,8 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
@@ -29,6 +32,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private double difficulty = 0;
     private int score = 0;
 
+    double pointX;
+
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
 
@@ -40,6 +45,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         width = displayMetrics.widthPixels;
+        pointX = width*0.5;
         height = displayMetrics.heightPixels;
 
         this.captorActivity = new CaptorActivity();
@@ -49,7 +55,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-        teacup = new Teacup(width/2, height/2,context);
+        teacup = new Teacup(pointX, height,context);
     }
 
     @Override
@@ -95,11 +101,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (currentTime-lastTime>1000){
             score += 1;
             lastTime = currentTime;
-            if(Math.random()<0.1 || score > 10){
-                endGame();
-            }
         }
-
+        teacup.setX(pointX);
     }
 
     public void createEntity(){
@@ -127,10 +130,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 tmpPlace = i;
 
             }
-            //System.out.println("place : "+tmpPlace+" = "+tmpScore);
         }
         if (isHighScore){
-            System.out.println("this score is "+tmpPlace);
 
             tmpScore = sharedp.getInt(("score"+tmpPlace),0);
             editor.putInt(("score"+tmpPlace),score).apply();
@@ -157,5 +158,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void cleanEntities() {
         leaves.removeIf(leaf -> leaf.getY() > height);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        pointX = event.getX();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        return true;
     }
 }
