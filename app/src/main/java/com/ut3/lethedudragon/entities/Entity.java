@@ -28,8 +28,8 @@ public abstract class Entity {
     public abstract void update(double difficulty);
 
     public void draw(Canvas canvas) {
-        canvas.drawRect((float) (x + hitBox.x), (float) (y + hitBox.y), (float) (x + hitBox.x + hitBox.width), (float) (y + hitBox.y + hitBox.height), paint);
-        // canvas.drawBitmap(bmp, (float) x, (float) y, paint);
+        //canvas.drawRect((float) (x + hitBox.x), (float) (y + hitBox.y), (float) (x + hitBox.x + hitBox.width), (float) (y + hitBox.y + hitBox.height), paint);
+        canvas.drawBitmap(bmp, (float) x, (float) y, paint);
     }
 
     public double getX() {
@@ -51,4 +51,6 @@ public abstract class Entity {
     public CollideBox getHitBox() {
         return hitBox;
     }
+
+    public abstract void collision(Entity entity);
 }

@@ -105,26 +105,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText(String.valueOf(stopwatch),width/2,200, paint);
     }
 
-    public void update(){
-        if (Math.random() < 0.01) {
-            createLeafs();
-        }
-
+    private void updateTime(){
         long currentTime = System.currentTimeMillis();
 
         if (currentTime-lastTime>1000){
             score += 1;
+            stopwatch -=1;
             lastTime = currentTime;
         }
-        teacup.moveBottom(pointX);
     }
 
-    public void createEntity(){
-            if(stopwatch==0){
-                endGame();
-            }
+    private void testEndGame(){
+        if(stopwatch==0){
+            endGame();
+        }
+    }
 
-
+    public void update(){
+        if (Math.random() < 0.01) {
+            createLeafs();
+        }
+        updateTime();
+        testEndGame();
+        teacup.moveBottom(pointX);
+        
         // Update
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
