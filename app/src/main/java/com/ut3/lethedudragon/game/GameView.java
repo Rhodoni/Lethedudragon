@@ -3,6 +3,7 @@ package com.ut3.lethedudragon.game;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,7 +40,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-
+        thread.setRunning(true);
+        thread.start();
     }
 
     @Override
@@ -54,7 +56,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas) {
+
         super.draw(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+        }
     }
     public void update(){
 

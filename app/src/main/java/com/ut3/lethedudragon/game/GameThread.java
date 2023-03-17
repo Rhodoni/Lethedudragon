@@ -19,7 +19,7 @@ public class GameThread extends Thread {
         this.gameView = gameView;
     }
 
-    private void setRunning(boolean isRunning) {this.running = isRunning;}
+    public void setRunning(boolean isRunning) {this.running = isRunning;}
 
     @Override
     public void run(){
