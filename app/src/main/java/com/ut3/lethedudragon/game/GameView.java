@@ -3,11 +3,18 @@ package com.ut3.lethedudragon.game;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+
+import com.ut3.lethedudragon.entities.Leaf;
+import com.ut3.lethedudragon.entities.Teacup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
@@ -16,6 +23,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
 
     private SharedPreferences sharedPreferences;
+
+    private double difficulty = 0;
+    private double score = 0;
+
+    private List<Leaf> leaves = new ArrayList<Leaf>();
+    private Teacup teacup;
 
     public GameView(Context context) {
         super(context);
@@ -34,7 +47,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-
+        teacup = new Teacup(width/2, height);
     }
 
     @Override
@@ -55,20 +68,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+
+            leaves.forEach(leaf -> leaf.draw(canvas));
+            teacup.draw(canvas);
+        }
     }
+
     public void update(){
+        if (Math.random() < 0.01) {
+            createLeafs();
+        }
 
-    }
+        leaves.forEach(leaf -> leaf.update(difficulty));
 
-    public void createEntity(){
-
-    }
-
-    public void cleanEntities(){
-
+        cleanEntities();
     }
 
     public void endGame(){
 
+    }
+
+    private void createLeafs() {
+        if (Math.random() < 0.1 || leaves.size() < 2) {
+            leaves.add(new Leaf(Math.random() * width, 0));
+        }
+    }
+
+    private void updateDifficulty() {
+        // Difficulté est dépendante du score
+        double difficulty = (double) score / (score + 1000) * 20;
+    }
+
+    private void cleanEntities() {
+        leaves.removeIf(leaf -> leaf.getY() > height);
     }
 }
