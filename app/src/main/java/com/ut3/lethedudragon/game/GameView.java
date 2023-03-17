@@ -132,12 +132,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             score += 1;
             lastTime = currentTime;
         }
-        leaves.forEach(leaf -> leaf.update(2));
+
         updateTime();
         testEndGame();
         teacup.moveBottom(pointX);
         
         // Update
+        teacup.setAcceleration(this.captorActivity.stickAcceleration*3);
+
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
 

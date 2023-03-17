@@ -8,7 +8,7 @@ import android.graphics.Color;
 import com.ut3.lethedudragon.R;
 
 public class Teacup extends Entity {
-    private double angle = -0.1;
+    private double angle = 0;
     private double acceleration = 0.0;
     private double gravity = 0.01;
     private double rotationAcceleration = 0;
@@ -46,7 +46,7 @@ public class Teacup extends Entity {
     }
 
     private void updateAngle(double difficulty) {
-        angle = (angle + rotationSpeed * difficulty) % 45;
+        angle = Math.max(Math.min(angle + rotationSpeed * difficulty, 90), -90);
     }
 
     private void updateRotationSpeed() {
@@ -55,6 +55,7 @@ public class Teacup extends Entity {
 
     private void updateRotationAcceleration() {
         rotationAcceleration = angle * gravity + acceleration;
+
     }
 
     @Override
