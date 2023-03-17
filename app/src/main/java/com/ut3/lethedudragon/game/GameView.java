@@ -1,7 +1,11 @@
 package com.ut3.lethedudragon.game;
 
+import static android.graphics.Color.rgb;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,6 +18,7 @@ import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.R;
 import com.ut3.lethedudragon.entities.Chrono;
 import com.ut3.lethedudragon.entities.Leaf;
 import com.ut3.lethedudragon.entities.Sablier;
@@ -88,7 +93,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+
+            canvas.save();
+           canvas.drawColor(rgb(199,153,80));
+
+            Bitmap background = BitmapFactory.decodeResource(context.getResources(), R.drawable.fond);
+            canvas.scale(1,1);
+
+            canvas.scale(canvas.getWidth()/background.getWidth(),canvas.getHeight()/background.getHeight());
+            //Bitmap background = Bitmap.createBitmap(backgroundImage,0,0,width,height);
+            canvas.drawBitmap(background, 0, 0, null);
+
+
+            canvas.restore();
 
             chrono.draw(canvas);
             sablier.draw(canvas);
@@ -135,7 +152,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         updateTime();
 
         if (stopwatch<=0){
-            System.out.println(" End Game");
             endGame();
         }
         teacup.moveBottom(pointX);
@@ -159,7 +175,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         SharedPreferences.Editor editor = sharedp.edit();
         for (int i=4; i>=0; i--){
             tmpScore =  sharedp.getInt("score"+i,0);
-            System.out.println("Score de "+i+" : "+tmpScore);
             if (score >= tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
