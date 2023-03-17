@@ -10,10 +10,10 @@ import com.ut3.lethedudragon.R;
 public class Teacup extends Entity {
     private double angle = 0;
     private double acceleration = 0.0;
-    private double gravity = 0.01;
+    private double gravity = 0.001;
     private double rotationAcceleration = 0;
     private double rotationSpeed;
-    private double maxRotationSpeed = 5;
+    private double maxRotationSpeed = 10;
     private int temperature = 5;
     private int nbLeaves = 0;
     private double stickSize;
@@ -46,7 +46,7 @@ public class Teacup extends Entity {
     }
 
     private void updateAngle(double difficulty) {
-        angle = Math.max(Math.min(angle + rotationSpeed * difficulty, 90), -90);
+        angle = Math.max(Math.min(angle + rotationSpeed * difficulty, 45), -45);
     }
 
     private void updateRotationSpeed() {
@@ -55,7 +55,6 @@ public class Teacup extends Entity {
 
     private void updateRotationAcceleration() {
         rotationAcceleration = angle * gravity + acceleration;
-
     }
 
     @Override
@@ -89,7 +88,6 @@ public class Teacup extends Entity {
     }
 
     public void moveBottom(double x) {
-
         this.x = x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()/2;
     }
 

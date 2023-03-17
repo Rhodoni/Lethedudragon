@@ -28,7 +28,7 @@ public class CaptorActivity implements SensorEventListener {
 
                     // Normalisation sur [-1, 1]
                     this.stickAcceleration = orientationAngles[2] / Math.PI;
-
+                    System.out.println(stickAcceleration);
                     break;
             }
         }

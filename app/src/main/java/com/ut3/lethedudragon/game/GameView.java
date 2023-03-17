@@ -149,7 +149,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         // Update
-        teacup.setAcceleration(this.captorActivity.stickAcceleration*3);
+        teacup.setAcceleration(captorActivity.stickAcceleration);
         teacup.moveBottom(pointX);
 
         teacup.update(difficulty);
@@ -171,7 +171,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         boolean isHighScore = false;
 
         thread.setRunning(false);
-
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
