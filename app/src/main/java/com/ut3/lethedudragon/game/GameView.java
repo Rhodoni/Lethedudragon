@@ -158,6 +158,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         leaves.forEach(leaf -> {
             if (teacup.checkCollision(leaf)) {
                 teacup.collision(leaf);
+                stopwatch += teacup.getTemperature();
             }
         });
 

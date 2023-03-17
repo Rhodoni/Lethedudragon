@@ -41,7 +41,6 @@ public class CaptorActivity implements SensorEventListener {
 
     public void setUpSensors(Context context){
         sm = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_GAME );
         sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),SensorManager.SENSOR_DELAY_GAME );
     }
 

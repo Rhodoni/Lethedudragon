@@ -14,7 +14,7 @@ public class Teacup extends Entity {
     private double rotationAcceleration = 0;
     private double rotationSpeed;
     private double maxRotationSpeed = 5;
-    private double temperature;
+    private int temperature = 5;
     private int nbLeaves = 0;
     private double stickSize;
     private Point pivot;
@@ -99,6 +99,10 @@ public class Teacup extends Entity {
 
     public void fall() {
 
+    }
+
+    public int getTemperature() {
+        return temperature;
     }
 
     public void setAcceleration(double acceleration) {
