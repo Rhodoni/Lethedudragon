@@ -7,15 +7,42 @@
     tools:context=".viewholder.Opening">
 
     <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Un jeu par Alex, David et Flavien"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.558"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.217" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="222dp"
+        android:layout_height="75dp"
+        android:text="Le but du jeu est d'avoir le plus grand score possible, en soufflant du feu sur la tasse et récupérant le plus de feuilles de thé possibles"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.566"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.338" />
+
+    <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Le thé du dragon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.539"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.165" />
+        app:layout_constraintVertical_bias="0.164" />
 
     <Button
         android:id="@+id/btnGame"
@@ -40,5 +67,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.746" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ladaronneajerem"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="386dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
