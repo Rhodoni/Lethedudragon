@@ -8,9 +8,17 @@ import android.graphics.Color;
 import com.ut3.lethedudragon.R;
 
 public class Teacup extends Entity {
-    private double angle;
+    private double angle = 0.1;
+    private double acceleration = 0.01;
+    private double rotationSpeed;
+    private double maxRotationSpeed = 10;
+    private double temperature;
+    private int nbLeaves = 0;
+    private double stickSize;
+
     private Context context;
     private CollideBox teaHitBox;
+    private CollideBox stickBox;
 
     public Teacup(double x, double y, Context context) {
         super((x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()),
@@ -28,24 +36,63 @@ public class Teacup extends Entity {
 
     @Override
     public void update(double difficulty) {
-
+        updateRotationSpeed();
+        updateAngle(difficulty);
     }
 
-    public void setX(double x){
-        this.x = x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth();
+    private void updateAngle(double difficulty) {
+        angle = (angle + rotationSpeed * difficulty) % 90;
+    }
+
+    private void updateRotationSpeed() {
+        rotationSpeed = Math.min(rotationSpeed + angle * acceleration, maxRotationSpeed);
     }
 
     @Override
     public void draw(Canvas canvas) {
+        canvas.save();
+        canvas.rotate((float) angle, (float) x, (float) y);
         canvas.drawRect((float) (x + teaHitBox.x), (float) (y + teaHitBox.y), (float) (x + teaHitBox.x + teaHitBox.width), (float) (y + teaHitBox.y + teaHitBox.height), paint);
         canvas.drawRect((float) (x + hitBox.x), (float) (y + hitBox.y), (float) (x + hitBox.x + hitBox.width), (float) (y + hitBox.y + hitBox.height), paint);
         canvas.drawBitmap(bmp, (float) x, (float) y, paint);
+
+        canvas.restore();
     }
 
-    @Override
-    public void collision(Entity entity) {
-        if (entity instanceof  Leaf) {
-            Leaf leaf = (Leaf) entity;
+    public void checkCollision(Leaf leaf) {
+        if (x + teaHitBox.x < leaf.x + leaf.hitBox.x + leaf.hitBox.width &&
+                x + teaHitBox.x + teaHitBox.width > leaf.x + leaf.hitBox.x &&
+                y + teaHitBox.y < leaf.y + leaf.hitBox.y + leaf.hitBox.height &&
+                y + teaHitBox.y + teaHitBox.height > leaf.y + leaf.hitBox.y)
+        {
+            collision(leaf);
         }
+    }
+
+    public void collision(Leaf leaf) {
+        nbLeaves++;
+    }
+
+    public void heat() {
+
+    }
+
+    public void moveBottom(double x) {
+
+        this.x = x - BitmapFactory.decodeResource(context.getResources(), R.drawable.main).getWidth()/2;
+    }
+
+    public void moveTop(double force) {
+
+    }
+
+    public void fall() {
+
+    }
+
+    private Point pointRotation(Point point, double angle) {
+        double x = point.x;
+        double y = point.y;
+        return new Point(x, y);
     }
 }

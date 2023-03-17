@@ -29,7 +29,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
     private long lastTime;
 
-    private double difficulty = 0;
+    private double difficulty = 1;
     private int score = 0;
 
     double pointX;
@@ -72,7 +72,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         thread.setRunning(false);
-
     }
 
     @Override
@@ -81,10 +80,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
-            //leaves.forEach(leaf -> leaf.draw(canvas));
+            leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
-
 
         // Draw score
         Paint paint = new Paint();
@@ -92,20 +90,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.GREEN);
         canvas.drawText(String.valueOf(score),width/2,100, paint);
     }
+
     public void update(){
         if (Math.random() < 0.01) {
             createLeafs();
         }
+
         long currentTime = System.currentTimeMillis();
 
         if (currentTime-lastTime>1000){
             score += 1;
             lastTime = currentTime;
         }
-        teacup.setX(pointX);
+        teacup.moveBottom(pointX);
     }
 
     public void createEntity(){
+
+        // Update
+        teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
 
         cleanEntities();
@@ -121,18 +124,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
-        for(int i = 4;i>=0;i--){
-            tmpScore =  sharedp.getInt(("score"+i),0);
-
-            if(score>tmpScore){
-
+        for(int i = 4;i<=0;i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if(score > tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
-
             }
         }
         if (isHighScore){
-
             tmpScore = sharedp.getInt(("score"+tmpPlace),0);
             editor.putInt(("score"+tmpPlace),score).apply();
 
