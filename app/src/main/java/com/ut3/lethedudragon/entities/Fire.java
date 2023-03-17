@@ -27,11 +27,6 @@ public class Fire extends Entity {
     }
 
     @Override
-    public void collision(Entity entity) {
-
-    }
-
-    @Override
     public void update(double difficulty) {
 
     }

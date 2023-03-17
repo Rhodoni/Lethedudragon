@@ -147,7 +147,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (Math.random() < 0.03) {
             createLeafs();
         }
-
+        if (getEnergy()){
+            laDaronneAJerem.throwflames();
+            teacup.heat();
+        }
         updateTime();
 
         if (stopwatch<=0){
