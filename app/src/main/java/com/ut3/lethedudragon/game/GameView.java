@@ -14,7 +14,9 @@ import android.view.VelocityTracker;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.entities.Chrono;
 import com.ut3.lethedudragon.entities.Leaf;
+import com.ut3.lethedudragon.entities.Sablier;
 import com.ut3.lethedudragon.entities.Teacup;
 
 import java.util.ArrayList;
@@ -31,11 +33,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private double difficulty = 1;
     private int score = 0;
+    private int stopwatch = 30;
 
     double pointX;
 
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
+    private Chrono chrono;
+    private Sablier sablier;
 
     public GameView(Context context) {
         super(context);
@@ -55,6 +60,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
+        teacup = new Teacup(width/2, height/2,context);
+        chrono = new Chrono(width/2 -100, 40, context);
+        sablier = new Sablier(width/2 -100, 140, context);
+
         teacup = new Teacup(pointX, height,context);
     }
 
@@ -80,6 +89,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
+
+            chrono.draw(canvas);
+            sablier.draw(canvas);
             leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
@@ -89,6 +101,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setTextSize(50);
         paint.setColor(Color.GREEN);
         canvas.drawText(String.valueOf(score),width/2,100, paint);
+        paint.setColor(Color.RED);
+        canvas.drawText(String.valueOf(stopwatch),width/2,200, paint);
+    }
+
+    private void updateTime(){
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime-lastTime>1000){
+            score += 1;
+            stopwatch -=1;
+            lastTime = currentTime;
+        }
+    }
+
+    private void testEndGame(){
+        if(stopwatch==0){
+            endGame();
+        }
     }
 
     public void update(){
@@ -103,11 +133,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             lastTime = currentTime;
         }
         leaves.forEach(leaf -> leaf.update(2));
+        updateTime();
         teacup.moveBottom(pointX);
-    }
-
-    public void createEntity(){
-
+        
         // Update
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));

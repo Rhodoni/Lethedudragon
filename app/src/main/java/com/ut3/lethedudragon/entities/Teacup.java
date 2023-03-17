@@ -68,6 +68,11 @@ public class Teacup extends Entity {
         canvas.restore();
     }
 
+    @Override
+    public void collision(Entity entity) {
+
+    }
+
     public void checkCollision(Leaf leaf) {
         if (x + teaHitBox.x < leaf.x + leaf.hitBox.x + leaf.hitBox.width &&
                 x + teaHitBox.x + teaHitBox.width > leaf.x + leaf.hitBox.x &&

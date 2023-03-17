@@ -23,6 +23,11 @@ public class Leaf extends Entity {
         updatePosition(difficulty);
     }
 
+    @Override
+    public void collision(Entity entity) {
+
+    }
+
     private void updatePosition(double difficulty) {
         y += speedY * difficulty;
         x += speedX * difficulty;

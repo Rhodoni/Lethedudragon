@@ -51,4 +51,6 @@ public abstract class Entity {
     public CollideBox getHitBox() {
         return hitBox;
     }
+
+    public abstract void collision(Entity entity);
 }
