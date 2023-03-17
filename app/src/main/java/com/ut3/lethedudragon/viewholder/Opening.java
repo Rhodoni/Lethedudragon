@@ -1,7 +1,9 @@
 package com.ut3.lethedudragon.viewholder;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -23,6 +25,8 @@ public class Opening extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.opening);
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 200);
 
         btnGame = (Button)findViewById(R.id.btnGame);
         btnGame.setOnClickListener(view -> {

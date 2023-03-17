@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaRecorder;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,42 +22,51 @@ import androidx.annotation.NonNull;
 
 import com.ut3.lethedudragon.R;
 import com.ut3.lethedudragon.entities.Chrono;
+import com.ut3.lethedudragon.entities.Fire;
 import com.ut3.lethedudragon.entities.Leaf;
 import com.ut3.lethedudragon.entities.Sablier;
 import com.ut3.lethedudragon.entities.Teacup;
+import com.ut3.lethedudragon.viewholder.Opening;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ut3.lethedudragon.viewholder.Opening;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+
     private Context context;
     private GameThread thread;
-    private int width,height;
+    private int width, height;
     private CaptorActivity captorActivity;
     private long lastTime;
 
     private double difficulty = 1;
     private int score = 0;
-    private int stopwatch = 500;
+    private int stopwatch = 30;
+    private MediaRecorder _recorder; // recording object
 
     double pointX;
 
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
     private Chrono chrono;
+    private Fire laDaronneAJerem;
     private Sablier sablier;
 
     public GameView(Context context) {
         super(context);
         this.context = context;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            _recorder = new MediaRecorder(context);
+        }
         thread = new GameThread(getHolder(), this);
         getHolder().addCallback(this);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         width = displayMetrics.widthPixels;
-        pointX = width*0.5;
+        pointX = width * 0.5;
         height = displayMetrics.heightPixels;
 
         this.captorActivity = new CaptorActivity();
@@ -65,11 +76,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-        teacup = new Teacup(width/2, height/2,context);
-        chrono = new Chrono(width/2 -120, height*0.10, context);
-        sablier = new Sablier(width/2 -120, height*0.03, context);
-
-        teacup = new Teacup(pointX, height,context);
+        teacup = new Teacup(width / 2, height / 2, context);
+        chrono = new Chrono(width / 2 - 120, height * 0.10, context);
+        sablier = new Sablier(width / 2 - 120, height * 0.03, context);
+        teacup = new Teacup(pointX, height, context);
+        laDaronneAJerem = new Fire(width / 2, height, context);
+        startRecorder();
     }
 
     @Override
@@ -111,39 +123,48 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             sablier.draw(canvas);
             leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
+            if(laDaronneAJerem.getBmp()!=null){
+                laDaronneAJerem.draw(canvas);
+            }
         }
 
         // Draw score
         Paint paint = new Paint();
         paint.setTextSize(50);
         paint.setColor(Color.GREEN);
-        canvas.drawText(String.valueOf(score), width/2,(float) (height*0.125), paint);
+        canvas.drawText(String.valueOf(score), width / 2, (float) (height * 0.125), paint);
         paint.setColor(Color.RED);
-        canvas.drawText(String.valueOf(stopwatch), width/2,(float) (height*0.05), paint);
+        canvas.drawText(String.valueOf(stopwatch), width / 2, (float) (height * 0.05), paint);
     }
+
 
     private void updateTime(){
         long currentTime = System.currentTimeMillis();
 
-        if (currentTime-lastTime>1000){
+        if (currentTime - lastTime > 1000) {
             score += 1;
-            stopwatch -=1;
+            stopwatch -= 1;
             lastTime = currentTime;
         }
     }
 
-    private void testEndGame(){
-
-    }
 
     public void update(){
+        int cold = 0;
         if (Math.random() < 0.03) {
             createLeafs();
         }
-
+        if (getEnergy()){
+            laDaronneAJerem.throwflames();
+            teacup.heat();
+        }
         updateTime();
+        cold += 1;
 
-        if (stopwatch<=0){
+        if(cold == 3){
+            teacup.getCold();
+        }
+        if (stopwatch<=0 || teacup.getAngle()>45 || teacup.getAngle()>-45){
             endGame();
         }
 
@@ -171,6 +192,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         boolean isHighScore = false;
 
         thread.setRunning(false);
+
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
@@ -221,4 +243,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         return true;
     }
+
+    private void startRecorder() {
+        _recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        _recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        _recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        _recorder.setOutputFile(context.getCacheDir().getAbsolutePath() + "/audio.3gp");
+        try {
+            _recorder.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        _recorder.start();
+    }
+
+    private boolean getEnergy() {
+        return _recorder.getMaxAmplitude() > 25000;
+    }
+
 }
