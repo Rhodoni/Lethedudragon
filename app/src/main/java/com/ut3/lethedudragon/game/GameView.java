@@ -3,6 +3,8 @@ package com.ut3.lethedudragon.game;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,6 +18,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int width,height;
     private CaptorActivity captorActivity;
+    private long lastTime;
 
     private SharedPreferences sharedPreferences;
 
@@ -59,8 +62,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+
+        // Draw score
+        Paint paint = new Paint();
+        paint.setTextSize(50);
+        paint.setColor(Color.GREEN);
+        canvas.drawText(String.valueOf(score),width/2,100, paint);
     }
     public void update(){
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime-lastTime>1000){
+            score += 1;
+            lastTime = currentTime;
+        }
 
     }
 
