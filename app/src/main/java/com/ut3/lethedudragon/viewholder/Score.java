@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ut3.lethedudragon.R;
 
 public class Score extends Activity {
-
+    SharedPreferences sharedPref;
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -27,7 +27,7 @@ public class Score extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        SharedPreferences sharedPref = this.getSharedPreferences("gameEnd", Context.MODE_PRIVATE);
+        sharedPref = this.getSharedPreferences("gameEnd", Context.MODE_PRIVATE);
         //sharedPref.edit().putInt("score",77).apply();
 
         RecyclerView scores = (RecyclerView) findViewById(R.id.scores);
@@ -57,13 +57,14 @@ public class Score extends Activity {
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            //scored = sharedPref.getInt("score",0);
-            ((TextView) holder.itemView).setText("score " + 30+" s");
+            int scored;
+            scored = sharedPref.getInt("score"+position,0);
+            ((TextView) holder.itemView).setText("score "+(position+1)+" : " + scored+" s");
         }
 
         @Override
         public int getItemCount() {
-            return 1;
+            return 5;
         }
     }
 }

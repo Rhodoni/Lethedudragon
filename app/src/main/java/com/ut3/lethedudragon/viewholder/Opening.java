@@ -30,8 +30,20 @@ public class Opening extends AppCompatActivity {
         });
         btnScore = (Button)findViewById(R.id.btnScore);
         btnScore.setOnClickListener(view -> {
+
             Intent scoreIntent = new Intent(view.getContext(), Score.class);
             startActivity(scoreIntent);
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent mainAct = new Intent(this, Opening.class);
+        finish();
+        startActivity(mainAct);
+    }
+    public void endingGame() {
+        Intent scoreIntent = new Intent(this, Score.class);
+        startActivity(scoreIntent);
     }
 }

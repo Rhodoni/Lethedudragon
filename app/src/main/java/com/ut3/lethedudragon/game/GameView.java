@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,8 +24,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private int width,height;
     private CaptorActivity captorActivity;
-
-    private SharedPreferences sharedPreferences;
+    private long lastTime;
 
     private double difficulty = 1;
     private int score = 0;
@@ -45,10 +45,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.captorActivity = new CaptorActivity();
         this.captorActivity.setUpSensors(this.context);
         initialiseGame();
+
     }
 
     private void initialiseGame() {
-        teacup = new Teacup(width/2, height/2);
+        teacup = new Teacup(width/2, height/2,context);
     }
 
     @Override
@@ -69,17 +70,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void draw(Canvas canvas) {
+
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
             leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
+
+        // Draw score
+        Paint paint = new Paint();
+        paint.setTextSize(50);
+        paint.setColor(Color.GREEN);
+        canvas.drawText(String.valueOf(score),width/2,100, paint);
     }
 
     public void update(){
         if (Math.random() < 0.01) {
             createLeafs();
+        }
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime-lastTime>1000){
+            score += 1;
+            lastTime = currentTime;
+            if(Math.random()<0.1 || score > 10){
+                endGame();
+            }
         }
 
         // Update
@@ -90,36 +108,44 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void endGame(){
-        //thread.setRunning(false);
-        int tmpScore;
+        int tmpScore = 0;
         int tmpPlace = 0;
         boolean isHighScore = false;
+
+        thread.setRunning(false);
+
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
         for(int i = 4;i<=0;i--){
             tmpScore =  sharedp.getInt("score"+i,0);
-            if(score>tmpScore){
+            if(score > tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
             }
         }
         if (isHighScore){
-            editor.putInt("score"+tmpPlace,score).apply();
+            tmpScore = sharedp.getInt(("score"+tmpPlace),0);
+            editor.putInt(("score"+tmpPlace),score).apply();
+
+            for(int i=tmpPlace+1;i<4;i++){
+                editor.putInt(("score"+i),tmpScore).apply();
+                tmpScore = sharedp.getInt(("score"+i),0);
+            }
         }
 
-        // ((Opening)context).endingGame();
+        ((Opening)context).endingGame();
     }
 
     private void createLeafs() {
         if (Math.random() < 0.1 || leaves.size() < 2) {
-            leaves.add(new Leaf(Math.random() * width, height / 2));
+            leaves.add(new Leaf(Math.random() * width, 0,context));
         }
     }
 
     private void updateDifficulty() {
         // Difficulté est dépendante du score
-        //double difficulty = (double) score / (score + 1000) * 20;
+        double difficulty = (double) score / (score + 1000) * 20;
     }
 
     private void cleanEntities() {
