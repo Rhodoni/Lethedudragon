@@ -30,8 +30,15 @@ public class Opening extends AppCompatActivity {
         });
         btnScore = (Button)findViewById(R.id.btnScore);
         btnScore.setOnClickListener(view -> {
+
             Intent scoreIntent = new Intent(view.getContext(), Score.class);
             startActivity(scoreIntent);
         });
+    }
+
+    public void endingGame(){
+        Intent scoreIntent = new Intent(this, Score.class);
+        startActivity(scoreIntent);
+        finish();
     }
 }

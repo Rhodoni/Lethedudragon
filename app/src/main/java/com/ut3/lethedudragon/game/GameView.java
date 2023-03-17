@@ -26,8 +26,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
     private long lastTime;
 
-    private SharedPreferences sharedPreferences;
-
     private double difficulty = 0;
     private int score = 0;
 
@@ -76,7 +74,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
-            leaves.forEach(leaf -> leaf.draw(canvas));
+            //leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
 
@@ -96,39 +94,53 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         if (currentTime-lastTime>1000){
             score += 1;
             lastTime = currentTime;
+            if(Math.random()<0.1 || score > 10){
+                endGame();
+            }
         }
 
     }
 
     public void createEntity(){
-
-    }
-
         leaves.forEach(leaf -> leaf.update(difficulty));
 
         cleanEntities();
     }
 
     public void endGame(){
-        //thread.setRunning(false);
-        int tmpScore;
+        int tmpScore = 0;
         int tmpPlace = 0;
         boolean isHighScore = false;
 
+        thread.setRunning(false);
+
+
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
-        for(int i = 4;i<=0;i--){
-            tmpScore =  sharedp.getInt("score"+i,0);
+        for(int i = 4;i>=0;i--){
+            tmpScore =  sharedp.getInt(("score"+i),0);
+
             if(score>tmpScore){
+
                 isHighScore = true;
                 tmpPlace = i;
+
             }
+            //System.out.println("place : "+tmpPlace+" = "+tmpScore);
         }
         if (isHighScore){
-            editor.putInt("score"+tmpPlace,score).apply();
+            System.out.println("this score is "+tmpPlace);
+
+            tmpScore = sharedp.getInt(("score"+tmpPlace),0);
+            editor.putInt(("score"+tmpPlace),score).apply();
+
+            for(int i=tmpPlace+1;i<4;i++){
+                editor.putInt(("score"+i),tmpScore).apply();
+                tmpScore = sharedp.getInt(("score"+i),0);
+            }
         }
 
-       // ((Opening)context).endingGame();
+        ((Opening)context).endingGame();
     }
 
     private void createLeafs() {
