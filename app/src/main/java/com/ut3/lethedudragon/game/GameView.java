@@ -11,7 +11,9 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.entities.Chrono;
 import com.ut3.lethedudragon.entities.Leaf;
+import com.ut3.lethedudragon.entities.Sablier;
 import com.ut3.lethedudragon.entities.Teacup;
 
 import java.util.ArrayList;
@@ -28,9 +30,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private double difficulty = 0;
     private int score = 0;
+    private int stopwatch = 30;
 
     private List<Leaf> leaves = new ArrayList<Leaf>();
     private Teacup teacup;
+    private Chrono chrono;
+    private Sablier sablier;
 
     public GameView(Context context) {
         super(context);
@@ -50,6 +55,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void initialiseGame() {
         teacup = new Teacup(width/2, height/2,context);
+        chrono = new Chrono(width/2 -100, 40, context);
+        sablier = new Sablier(width/2 -100, 140, context);
+
     }
 
     @Override
@@ -73,18 +81,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
 
         super.draw(canvas);
+
+
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
+
+            chrono.draw(canvas);
+            sablier.draw(canvas);
             //leaves.forEach(leaf -> leaf.draw(canvas));
             teacup.draw(canvas);
         }
 
 
         // Draw score
+
         Paint paint = new Paint();
         paint.setTextSize(50);
         paint.setColor(Color.GREEN);
         canvas.drawText(String.valueOf(score),width/2,100, paint);
+        paint.setColor(Color.RED);
+        canvas.drawText(String.valueOf(stopwatch),width/2,200, paint);
     }
     public void update(){
         if (Math.random() < 0.01) {
@@ -94,8 +110,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         if (currentTime-lastTime>1000){
             score += 1;
+            stopwatch -=1;
+
             lastTime = currentTime;
-            if(Math.random()<0.1 || score > 10){
+            if(stopwatch==0){
                 endGame();
             }
         }
