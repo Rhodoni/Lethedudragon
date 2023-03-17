@@ -10,6 +10,14 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.entities.Leaf;
+import com.ut3.lethedudragon.entities.Teacup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ut3.lethedudragon.viewholder.Opening;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     private GameThread thread;
@@ -17,6 +25,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
 
     private SharedPreferences sharedPreferences;
+
+    private double difficulty = 0;
+    private int score = 0;
+
+    private List<Leaf> leaves = new ArrayList<Leaf>();
+    private Teacup teacup;
 
     public GameView(Context context) {
         super(context);
@@ -35,7 +49,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-
+        teacup = new Teacup(width/2, height);
     }
 
     @Override
@@ -60,21 +74,55 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
+            leaves.forEach(leaf -> leaf.draw(canvas));
+            teacup.draw(canvas);
         }
     }
+
     public void update(){
+        if (Math.random() < 0.01) {
+            createLeafs();
+        }
 
-    }
+        leaves.forEach(leaf -> leaf.update(difficulty));
 
-    public void createEntity(){
-
-    }
-
-    public void cleanEntities(){
-
+        cleanEntities();
     }
 
     public void endGame(){
+        //thread.setRunning(false);
+        int tmpScore;
+        int tmpPlace = 0;
+        boolean isHighScore = false;
 
+        SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedp.edit();
+        for(int i = 4;i<=0;i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if(score>tmpScore){
+                isHighScore = true;
+                tmpPlace = i;
+            }
+        }
+        if (isHighScore){
+            editor.putInt("score"+tmpPlace,score).apply();
+        }
+
+        // ((Opening)context).endingGame();
+    }
+
+    private void createLeafs() {
+        if (Math.random() < 0.1 || leaves.size() < 2) {
+            leaves.add(new Leaf(Math.random() * width, 0));
+        }
+    }
+
+    private void updateDifficulty() {
+        // Difficulté est dépendante du score
+        double difficulty = (double) score / (score + 1000) * 20;
+    }
+
+    private void cleanEntities() {
+        leaves.removeIf(leaf -> leaf.getY() > height);
     }
 }
