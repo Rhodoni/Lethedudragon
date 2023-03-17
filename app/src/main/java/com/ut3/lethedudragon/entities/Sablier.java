@@ -18,9 +18,4 @@ public class Sablier extends Entity{
     public void update(double difficulty) {
 
     }
-
-    @Override
-    public void collision(Entity entity) {
-
-    }
 }

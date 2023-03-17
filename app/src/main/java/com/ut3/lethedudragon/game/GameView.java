@@ -33,7 +33,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private double difficulty = 1;
     private int score = 0;
-    private int stopwatch = 15;
+    private int stopwatch = 500;
 
     double pointX;
 
@@ -124,27 +124,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             createLeafs();
         }
 
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime-lastTime>1000){
-            score += 1;
-            stopwatch -= 1;
-            lastTime = currentTime;
-        }
-
         updateTime();
 
         if (stopwatch<=0){
             System.out.println(" End Game");
             endGame();
         }
-        teacup.moveBottom(pointX);
+
 
         // Update
         teacup.setAcceleration(this.captorActivity.stickAcceleration*3);
+        teacup.moveBottom(pointX);
 
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
+
+        leaves.forEach(leaf -> {
+            if (teacup.checkCollision(leaf)) {
+                teacup.collision(leaf);
+            }
+        });
 
         cleanEntities();
     }
@@ -192,7 +191,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void cleanEntities() {
-        leaves.removeIf(leaf -> leaf.getY() > height);
+        leaves.removeIf(leaf -> leaf.getY() > height || leaf.isCatched);
     }
 
     @Override
