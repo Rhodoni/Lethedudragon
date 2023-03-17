@@ -148,7 +148,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             stopwatch -= 1;
             lastTime = currentTime;
         }
-        leaves.forEach(leaf -> leaf.update(2));
+
         updateTime();
 
         if (stopwatch<=0){
@@ -157,6 +157,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         teacup.moveBottom(pointX);
 
         // Update
+        teacup.setAcceleration(this.captorActivity.stickAcceleration*3);
+
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
 
