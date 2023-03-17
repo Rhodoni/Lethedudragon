@@ -9,6 +9,8 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.viewholder.Opening;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     private GameThread thread;
@@ -16,6 +18,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CaptorActivity captorActivity;
 
     private SharedPreferences sharedPreferences;
+
+    private int score;
 
     public GameView(Context context) {
         super(context);
@@ -69,6 +73,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void endGame(){
+        //thread.setRunning(false);
+        int tmpScore;
+        int tmpPlace = 0;
+        boolean isHighScore = false;
 
+        SharedPreferences sharedp = context.getSharedPreferences("gameEnd",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedp.edit();
+        for(int i = 4;i<=0;i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if(score>tmpScore){
+                isHighScore = true;
+                tmpPlace = i;
+            }
+        }
+        if (isHighScore){
+            editor.putInt("score"+tmpPlace,score).apply();
+        }
+
+       // ((Opening)context).endingGame();
     }
 }
