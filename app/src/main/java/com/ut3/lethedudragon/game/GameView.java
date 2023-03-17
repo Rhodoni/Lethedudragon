@@ -49,7 +49,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initialiseGame() {
-        teacup = new Teacup(width/2, height);
+        teacup = new Teacup(width/2, height/2,context);
     }
 
     @Override
@@ -65,6 +65,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+        thread.setRunning(false);
 
     }
 
@@ -145,7 +146,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createLeafs() {
         if (Math.random() < 0.1 || leaves.size() < 2) {
-            leaves.add(new Leaf(Math.random() * width, 0));
+            leaves.add(new Leaf(Math.random() * width, 0,context));
         }
     }
 

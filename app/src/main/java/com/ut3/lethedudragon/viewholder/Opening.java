@@ -36,9 +36,14 @@ public class Opening extends AppCompatActivity {
         });
     }
 
-    public void endingGame(){
+    @Override
+    public void onBackPressed(){
+        Intent mainAct = new Intent(this, Opening.class);
+        finish();
+        startActivity(mainAct);
+    }
+    public void endingGame() {
         Intent scoreIntent = new Intent(this, Score.class);
         startActivity(scoreIntent);
-        finish();
     }
 }
