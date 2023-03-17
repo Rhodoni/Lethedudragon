@@ -1,7 +1,11 @@
 package com.ut3.lethedudragon.game;
 
+import static android.graphics.Color.rgb;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,6 +18,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.lethedudragon.R;
 import com.ut3.lethedudragon.entities.Chrono;
 import com.ut3.lethedudragon.entities.Fire;
 import com.ut3.lethedudragon.entities.Leaf;
@@ -96,7 +101,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+
+            canvas.save();
+           canvas.drawColor(rgb(199,153,80));
+
+            Bitmap background = BitmapFactory.decodeResource(context.getResources(), R.drawable.fond);
+            canvas.scale(1,1);
+
+            canvas.scale(canvas.getWidth()/background.getWidth(),canvas.getHeight()/background.getHeight());
+            //Bitmap background = Bitmap.createBitmap(backgroundImage,0,0,width,height);
+            canvas.drawBitmap(background, 0, 0, null);
+
+
+            canvas.restore();
 
             chrono.draw(canvas);
             sablier.draw(canvas);
@@ -126,33 +143,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void testEndGame() {
-        if (stopwatch == 0) {
-            endGame();
-        }
-    }
-
     public void update() {
         if (Math.random() < 0.03) {
             createLeafs();
         }
 
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime - lastTime > 1000) {
-            score += 1;
-            lastTime = currentTime;
-        }
-        leaves.forEach(leaf -> leaf.update(2));
         updateTime();
-        testEndGame();
-        teacup.moveBottom(pointX);
-        if (getEnergy()) {
-            laDaronneAJerem.throwflames();
+
+        if (stopwatch<=0){
+            endGame();
         }
+
+
         // Update
+        teacup.setAcceleration(this.captorActivity.stickAcceleration*3);
+        teacup.moveBottom(pointX);
+
         teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
+
+        leaves.forEach(leaf -> {
+            if (teacup.checkCollision(leaf)) {
+                teacup.collision(leaf);
+                stopwatch += teacup.getTemperature();
+            }
+        });
 
         cleanEntities();
     }
@@ -167,9 +182,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         SharedPreferences sharedp = context.getSharedPreferences("gameEnd", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedp.edit();
-        for (int i = 4; i <= 0; i--) {
-            tmpScore = sharedp.getInt("score" + i, 0);
-            if (score > tmpScore) {
+        for (int i=4; i>=0; i--){
+            tmpScore =  sharedp.getInt("score"+i,0);
+            if (score >= tmpScore){
                 isHighScore = true;
                 tmpPlace = i;
             }
@@ -199,7 +214,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void cleanEntities() {
-        leaves.removeIf(leaf -> leaf.getY() > height);
+        leaves.removeIf(leaf -> leaf.getY() > height || leaf.isCatched);
     }
 
     @Override

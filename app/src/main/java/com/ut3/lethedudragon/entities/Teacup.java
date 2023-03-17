@@ -8,13 +8,13 @@ import android.graphics.Color;
 import com.ut3.lethedudragon.R;
 
 public class Teacup extends Entity {
-    private double angle = -0.1;
+    private double angle = 0;
     private double acceleration = 0.0;
     private double gravity = 0.01;
     private double rotationAcceleration = 0;
     private double rotationSpeed;
     private double maxRotationSpeed = 5;
-    private double temperature;
+    private int temperature = 5;
     private int nbLeaves = 0;
     private double stickSize;
     private Point pivot;
@@ -46,7 +46,7 @@ public class Teacup extends Entity {
     }
 
     private void updateAngle(double difficulty) {
-        angle = (angle + rotationSpeed * difficulty) % 45;
+        angle = Math.max(Math.min(angle + rotationSpeed * difficulty, 90), -90);
     }
 
     private void updateRotationSpeed() {
@@ -55,36 +55,33 @@ public class Teacup extends Entity {
 
     private void updateRotationAcceleration() {
         rotationAcceleration = angle * gravity + acceleration;
+
     }
 
     @Override
     public void draw(Canvas canvas) {
         canvas.save();
         canvas.rotate((float) angle, (float) (x + pivot.x), (float) (y + pivot.y));
-        canvas.drawRect((float) (x + teaHitBox.x), (float) (y + teaHitBox.y), (float) (x + teaHitBox.x + teaHitBox.width), (float) (y + teaHitBox.y + teaHitBox.height), paint);
-        canvas.drawRect((float) (x + hitBox.x), (float) (y + hitBox.y), (float) (x + hitBox.x + hitBox.width), (float) (y + hitBox.y + hitBox.height), paint);
+        //canvas.drawRect((float) (x + teaHitBox.x), (float) (y + teaHitBox.y), (float) (x + teaHitBox.x + teaHitBox.width), (float) (y + teaHitBox.y + teaHitBox.height), paint);
+        //canvas.drawRect((float) (x + hitBox.x), (float) (y + hitBox.y), (float) (x + hitBox.x + hitBox.width), (float) (y + hitBox.y + hitBox.height), paint);
         canvas.drawBitmap(bmp, (float) x, (float) y, paint);
 
         canvas.restore();
-    }
-
-    @Override
-    public void collision(Entity entity) {
 
     }
 
-    public void checkCollision(Leaf leaf) {
-        if (x + teaHitBox.x < leaf.x + leaf.hitBox.x + leaf.hitBox.width &&
-                x + teaHitBox.x + teaHitBox.width > leaf.x + leaf.hitBox.x &&
-                y + teaHitBox.y < leaf.y + leaf.hitBox.y + leaf.hitBox.height &&
-                y + teaHitBox.y + teaHitBox.height > leaf.y + leaf.hitBox.y)
-        {
-            collision(leaf);
-        }
+    public boolean checkCollision(Leaf leaf) {
+        double dx = Math.sin(Math.toRadians(angle)) * pivot.y;
+        double dy = pivot.y - Math.cos(Math.toRadians(angle)) * pivot.y;
+        return  x + hitBox.x + dx < leaf.x + leaf.hitBox.x + leaf.hitBox.width &&
+                x + hitBox.x + dx + hitBox.width > leaf.x + leaf.hitBox.x &&
+                y + hitBox.y + dy < leaf.y + leaf.hitBox.y + leaf.hitBox.height &&
+                y + hitBox.y + dy + hitBox.height > leaf.y + leaf.hitBox.y;
     }
 
     public void collision(Leaf leaf) {
         nbLeaves++;
+        leaf.catched();
     }
 
     public void heat() {
@@ -102,6 +99,10 @@ public class Teacup extends Entity {
 
     public void fall() {
 
+    }
+
+    public int getTemperature() {
+        return temperature;
     }
 
     public void setAcceleration(double acceleration) {

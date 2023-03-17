@@ -18,9 +18,4 @@ public class Chrono extends Entity{
     public void update(double difficulty) {
 
     }
-
-    @Override
-    public void collision(Entity entity) {
-
-    }
 }

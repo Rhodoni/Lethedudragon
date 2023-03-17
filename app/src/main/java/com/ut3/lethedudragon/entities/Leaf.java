@@ -7,8 +7,10 @@ import android.graphics.Color;
 import com.ut3.lethedudragon.R;
 
 public class Leaf extends Entity {
-    private double speedY = 5;
+    private double speedY = 10;
     private double speedX = 0;
+
+    public boolean isCatched = false;
 
     public Leaf(double x, double y, Context context) {
         super(x, y,
@@ -23,9 +25,8 @@ public class Leaf extends Entity {
         updatePosition(difficulty);
     }
 
-    @Override
-    public void collision(Entity entity) {
-
+    public void catched() {
+        this.isCatched = true;
     }
 
     private void updatePosition(double difficulty) {
