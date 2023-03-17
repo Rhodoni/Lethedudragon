@@ -7,7 +7,7 @@ public class Leaf extends Entity {
     private double speedX = 0;
 
     public Leaf(double x, double y) {
-        super(x, y, 200, 200, null);
+        super(x, y, 50, 50, null);
 
         paint.setColor(Color.GREEN);
     }
@@ -20,10 +20,5 @@ public class Leaf extends Entity {
     private void updatePosition(double difficulty) {
         y += speedY * difficulty;
         x += speedX * difficulty;
-    }
-
-    @Override
-    public void collision(Entity entity) {
-
     }
 }

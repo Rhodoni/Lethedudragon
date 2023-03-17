@@ -26,7 +26,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SharedPreferences sharedPreferences;
 
-    private double difficulty = 0;
+    private double difficulty = 1;
     private int score = 0;
 
     private List<Leaf> leaves = new ArrayList<Leaf>();
@@ -45,11 +45,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.captorActivity = new CaptorActivity();
         this.captorActivity.setUpSensors(this.context);
         initialiseGame();
-
     }
 
     private void initialiseGame() {
-        teacup = new Teacup(width/2, height);
+        teacup = new Teacup(width/2, height/2);
     }
 
     @Override
@@ -65,12 +64,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-
+        thread.setRunning(false);
     }
 
     @Override
     public void draw(Canvas canvas) {
-
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
@@ -84,6 +82,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             createLeafs();
         }
 
+        // Update
+        teacup.update(difficulty);
         leaves.forEach(leaf -> leaf.update(difficulty));
 
         cleanEntities();
@@ -113,13 +113,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createLeafs() {
         if (Math.random() < 0.1 || leaves.size() < 2) {
-            leaves.add(new Leaf(Math.random() * width, 0));
+            leaves.add(new Leaf(Math.random() * width, height / 2));
         }
     }
 
     private void updateDifficulty() {
         // Difficulté est dépendante du score
-        double difficulty = (double) score / (score + 1000) * 20;
+        //double difficulty = (double) score / (score + 1000) * 20;
     }
 
     private void cleanEntities() {
