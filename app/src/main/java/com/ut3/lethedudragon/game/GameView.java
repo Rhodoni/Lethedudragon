@@ -92,7 +92,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update(){
-        if (Math.random() < 0.01) {
+        if (Math.random() < 0.03) {
             createLeafs();
         }
 
@@ -102,6 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             score += 1;
             lastTime = currentTime;
         }
+        leaves.forEach(leaf -> leaf.update(2));
         teacup.moveBottom(pointX);
     }
 
